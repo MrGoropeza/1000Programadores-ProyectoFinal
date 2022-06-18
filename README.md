@@ -4,7 +4,7 @@ En este repositorio se encuentra todo el proyecto java, diagrama de clase, DER y
 
 ## Diagrama de Clases
 
-![Diagrama de Clases](DiagramaClases.png)
+<img src="DiagramaClases.png" alt="Diagrama de Clases" width="300">
 
 ## Diagrama Entidad-Relacion
 
