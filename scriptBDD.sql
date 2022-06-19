@@ -9,21 +9,21 @@ flush privileges;
 
 # Creacion de Tablas
 create table personas(
-	persona_id int not null auto_increment,
+	persona_dni int not null,
     persona_nombre varchar(50) not null,
     persona_apellido varchar(50) not null ,
     persona_fecha_nac date not null,
     persona_numero varchar(20) null,
     persona_correo varchar(100) not null,
-    primary key (persona_id)
+    primary key (persona_dni)
 );
 
 create table administrativos(
 	administrativo_id int not null auto_increment,
     is_super_admin bool default false,
-    persona_id int not null,
+    persona_dni int not null,
     primary key (administrativo_id),
-    foreign key fk_admin_persona (persona_id) references personas(persona_id)
+    foreign key fk_admin_persona (persona_dni) references personas(persona_dni)
 );
 
 create table sectores(
@@ -36,18 +36,18 @@ create table doctores(
 	doctor_id int not null auto_increment,
     doctor_especialidad varchar(100) null,
     sector_id int null,
-    persona_id int not null,
+    persona_dni int not null,
     primary key (doctor_id),
-    foreign key fk_doctor_persona (persona_id) references personas(persona_id),
+    foreign key fk_doctor_persona (persona_dni) references personas(persona_dni),
     foreign key fk_doctor_sector (sector_id) references sectores(sector_id)
 );
 
 create table pacientes(
 	paciente_id int not null auto_increment,
     paciente_has_ficha_medica bool default false,
-    persona_id int not null,
+    persona_dni int not null,
     primary key (paciente_id),
-    foreign key fk_paciente_persona (persona_id) references personas(persona_id)
+    foreign key fk_paciente_persona (persona_dni) references personas(persona_dni)
 );
 
 create table tratamientos(
@@ -80,25 +80,28 @@ create table turnos(
     
     # Doctores
     insert into muelas.personas
-		(persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo)
+		(persona_dni,persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo)
     values
-		('Pedro','Ramirez','1982-06-04','3874047363','pramirez@gmail.com'),
-		('Jose','Fernandez','1980-03-16','3874045222','jfernandez@gmail.com'),
-        ('Guillermo','Mogro','1992-05-25','3874028621','gmogro@gmail.com');
+		(38983235,'Pedro','Ramirez','1982-06-04','3874047363','pramirez@gmail.com'),
+		(37298351,'Jose','Fernandez','1980-03-16','3874045222','jfernandez@gmail.com'),
+        (36192857,'Guillermo','Mogro','1992-05-25','3874028621','gmogro@gmail.com');
         
 	insert into muelas.doctores
-    (doctor_especialidad,sector_id,persona_id)
+    (doctor_especialidad,sector_id,persona_dni)
     values
-		('Odontólogo',1,1),
-        ('Cirujano dentista',2,2),
-        ('Cirujano dentista',3,3);
+		('Odontólogo',1,38983235),
+        ('Cirujano dentista',2,37298351),
+        ('Cirujano dentista',3,36192857);
 	
 	# Administrativo
     insert into muelas.personas
-		(persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo)
+		(persona_dni,persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo)
     values
-		('Gonzalo','Sánchez','1982-06-04','3874325253','gsanchez@gmail.com');
+		(40297421,'Gonzalo','Sánchez','1982-06-04','3874325253','gsanchez@gmail.com');
 	
     insert into muelas.administrativos
-		(persona_id,is_super_admin)
-	value (4,true);
+		(persona_dni,is_super_admin)
+	value (40297421,true);
+
+
+drop database muelas;
