@@ -35,10 +35,10 @@ public class ConexionBDD {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				resultados.add(new Administrativo(
-						rs.getString("persona_dni"),
+						rs.getInt("persona_dni"),
 						rs.getString("persona_nombre"),
 						rs.getString("persona_apellido"),
-						rs.getDate("persona_fecha_nac"),
+						rs.getDate("persona_fecha_nac").toLocalDate(),
 						rs.getString("persona_numero"),
 						rs.getString("persona_correo")));
 			}
@@ -60,10 +60,10 @@ public class ConexionBDD {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				resultados.add(new Doctor(
-						rs.getString("persona_dni"),
+						rs.getInt("persona_dni"),
 						rs.getString("persona_nombre"),
 						rs.getString("persona_apellido"),
-						rs.getDate("persona_fecha_nac"),
+						rs.getDate("persona_fecha_nac").toLocalDate(),
 						rs.getString("persona_numero"),
 						rs.getString("persona_correo"),
 						rs.getString("doctor_especialidad"),
@@ -102,10 +102,10 @@ public class ConexionBDD {
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.next()) {
 				resultado = new Administrativo(
-						rs.getString("persona_dni"),
+						rs.getInt("persona_dni"),
 						rs.getString("persona_nombre"),
 						rs.getString("persona_apellido"),
-						rs.getDate("persona_fecha_nac"),
+						rs.getDate("persona_fecha_nac").toLocalDate(),
 						rs.getString("persona_numero"),
 						rs.getString("persona_correo"));
 			} else {
@@ -116,6 +116,44 @@ public class ConexionBDD {
 			System.out.println(e.getMessage());
 		}
 		return resultado;
+	}
+
+	public static boolean addPaciente(Paciente paciente) {
+		boolean rta = false;
+		try {
+			//insercion de persona en la bdd
+			PreparedStatement stmt = conn.prepareStatement(
+					"insert into muelas.personas "
+					+ "(persona_dni,persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo) "
+					+ "value "
+					+ "(?,?,?,?,?,?)"
+					);
+			stmt.setInt(1, paciente.getDni());
+			stmt.setString(2, paciente.getNombre());
+			stmt.setString(3, paciente.getApellido());
+			stmt.setDate(4, Date.valueOf(paciente.getFechaNacimiento()));
+			stmt.setString(5, paciente.getNumero());
+			stmt.setString(6, paciente.getCorreo());
+			int filasCargadas = stmt.executeUpdate();
+			if(filasCargadas != 1) {
+				return false;
+			}
+			
+			//insercion de paciente en la bdd
+			stmt = conn.prepareStatement(
+					"insert into muelas.pacientes "
+					+ "(persona_dni) "
+					+ "value "
+					+ "(?)"
+					);
+			stmt.setInt(1, paciente.getDni());
+			stmt.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			rta = false;
+		}
+		return rta;
 	}
 	
 	public static void main(String[] args) {

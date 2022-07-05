@@ -41,6 +41,7 @@ public class Consultorio {
 					"Especialidad: " + doctor.getEspecialidad() + ", " +
 					"Sector: " + doctor.getSector()
 			);
+			
 		}
 	}
 	

@@ -1,24 +1,28 @@
 package clases;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Turno {
-	private Date fechaInicio;
+	private LocalDate fechaInicio;
 	private Integer duracionMinutos;
 	private Paciente paciente;
 	private Doctor doctor;
 	
-	public Turno(Date fechaInicio, Integer duracionMinutos, Paciente paciente, Doctor doctor) {
+	public Turno(LocalDate fechaInicio, Integer duracionMinutos, Paciente paciente, Doctor doctor) {
 		this.setFechaInicio(fechaInicio);
 		this.setDuracionMinutos(duracionMinutos);
 		this.setPaciente(paciente);
 		this.setDoctor(doctor);
 	}
+	
+	public Turno() {
+		
+	}
 
-	public Date getFechaInicio() {
+	public LocalDate getFechaInicio() {
 		return fechaInicio;
 	}
-	public void setFechaInicio(Date fechaInicio) {
+	public void setFechaInicio(LocalDate fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
 

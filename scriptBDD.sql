@@ -104,4 +104,10 @@ create table turnos(
 	value (40297421,true);
 
 
+alter table muelas.turnos drop column turno_duracion_minutos;
+alter table muelas.turnos add column slot int;
+
+
+select * from muelas.turnos;
+
 drop database muelas;

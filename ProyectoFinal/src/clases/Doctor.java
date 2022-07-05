@@ -1,5 +1,6 @@
 package clases;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Doctor extends Persona {
@@ -8,7 +9,7 @@ public class Doctor extends Persona {
 	private String sector;
 	
 
-	public Doctor(String dni, String nombre, String apellido, Date fechanacimiento, String numero, String correo, String especialidad, String sector) {
+	public Doctor(int dni, String nombre, String apellido, LocalDate fechanacimiento, String numero, String correo, String especialidad, String sector) {
 		super(dni, nombre, apellido, fechanacimiento, numero, correo);
 		this.especialidad = especialidad;
 		this.sector = sector;
@@ -30,4 +31,5 @@ public class Doctor extends Persona {
 		this.sector = sector;
 	}
 
+	
 }

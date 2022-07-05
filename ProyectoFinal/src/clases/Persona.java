@@ -1,18 +1,20 @@
 package clases;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 
 public class Persona {
 	
-	private String dni;
+	private int dni;
 	private String nombre;
 	private String apellido;
-	private Date fechaNacimiento;
+	private LocalDate fechaNacimiento;
 	private String numero;
 	private String correo;
 //	private String password;
 	
-	public Persona(String dni, String nombre, String apellido, Date fechanacimiento, String numero, String correo) {
+	public Persona(int dni, String nombre, String apellido, LocalDate fechanacimiento, String numero, String correo) {
 		this.setDni(dni);
 		this.setNombre(nombre);
 		this.setApellido(apellido);
@@ -21,10 +23,10 @@ public class Persona {
 		this.setCorreo(correo);
 	}
 	
-	public String getDni() {
+	public int getDni() {
 		return dni;
 	}
-	public void setDni(String dni) {
+	public void setDni(int dni) {
 		this.dni = dni;
 	}
 
@@ -45,11 +47,15 @@ public class Persona {
 	}
 
 	
-	public Date getFechaNacimiento() {
+	public LocalDate getFechaNacimiento() {
 		return fechaNacimiento;
 	}
-	public void setFechaNacimiento(Date fechaNacimiento) {
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
+	}
+	
+	public int getEdad() {
+		return Period.between(fechaNacimiento, LocalDate.now()).getYears();
 	}
 
 	

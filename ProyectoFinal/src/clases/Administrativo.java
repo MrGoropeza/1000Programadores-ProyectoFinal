@@ -1,12 +1,17 @@
 package clases;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Administrativo extends Persona {
 
-	public Administrativo(String dni, String nombre, String apellido, Date fechanacimiento, String numero, String correo) {
-		super(dni, nombre, apellido, fechanacimiento, numero, correo);
+	public Administrativo(int dni, String nombre, String apellido, LocalDate date, String numero, String correo) {
+		super(dni, nombre, apellido, date, numero, correo);
 		
 	}
 
+	public void verFichas() {}
+	
+	public void cargarPacienteEmergencia() {}
+	
+	public void getInformeMensual() {}
 }
