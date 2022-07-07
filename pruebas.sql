@@ -47,3 +47,7 @@ where t1.persona_dni = t2.persona_dni
 and t2.persona_dni = 43337890;
 
 
+alter table muelas.turnos
+add column isEmergencia bool default false;
+
+

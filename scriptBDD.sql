@@ -66,6 +66,7 @@ create table turnos(
 	turno_id int not null auto_increment,
     turno_fecha datetime not null,
     slot int not null,
+    isEmergencia bool default false,
     paciente_id int not null,
     doctor_id int not null,
     primary key (turno_id),
