@@ -65,7 +65,7 @@ create table tratamientos(
 create table turnos(
 	turno_id int not null auto_increment,
     turno_fecha datetime not null,
-    turno_duracion_minutos int not null,
+    slot int not null,
     paciente_id int not null,
     doctor_id int not null,
     primary key (turno_id),
@@ -102,10 +102,6 @@ create table turnos(
     insert into muelas.administrativos
 		(persona_dni,is_super_admin)
 	value (40297421,true);
-
-
-alter table muelas.turnos drop column turno_duracion_minutos;
-alter table muelas.turnos add column slot int;
 
 
 select * from muelas.turnos;
