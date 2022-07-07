@@ -9,3 +9,7 @@ En este repositorio se encuentra todo el proyecto java, diagrama de clase, DER y
 ## Diagrama Entidad-Relacion
 
 ![DER](DER.png)
+
+## Libreria usada en el proyecto
+
+ - [Java ASCII Render](https://github.com/indvd00m/java-ascii-render): utilizada para hacer la interfaz de usuario bonita.
