@@ -10,6 +10,15 @@ public class Paciente extends Persona {
 		
 	}
 	
+	public Paciente(Persona persona) {
+		super(persona.getDni(),
+				persona.getNombre(),
+				persona.getApellido(),
+				persona.getFechaNacimiento(),
+				persona.getNumero(),
+				persona.getCorreo());
+	}
+	
 	public void iniciarSesion() {}
 	
 	public void registrarse() {}

@@ -23,6 +23,10 @@ public class Persona {
 		this.setCorreo(correo);
 	}
 	
+	public Persona() {
+		
+	}
+	
 	public int getDni() {
 		return dni;
 	}
