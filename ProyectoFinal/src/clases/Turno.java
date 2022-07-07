@@ -7,6 +7,7 @@ public class Turno {
 	private int id;
 	private LocalDate fechaInicio;
 	private int slot;
+	private boolean isEmergencia;
 	private Paciente paciente;
 	private Doctor doctor;
 	
@@ -36,6 +37,15 @@ public class Turno {
 		this.id = id;
 	}
 
+	
+	public boolean isEmergencia() {
+		return isEmergencia;
+	}
+	public void setEmergencia(boolean isEmergencia) {
+		this.isEmergencia = isEmergencia;
+	}
+
+	
 	public static String horaFinFromSlot(int slot) {
 		String resultado = "";
 		switch (slot) {

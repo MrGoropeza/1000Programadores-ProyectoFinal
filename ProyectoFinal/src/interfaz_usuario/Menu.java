@@ -37,7 +37,7 @@ public class Menu {
 				return rta;
 				
 			case 2:
-				System.out.println("Registrarse");
+				System.out.println("Registrarse: Función no implementada");
 				return rta;
 				
 			case 0:
@@ -372,14 +372,14 @@ public class Menu {
 		}
 	}
 	
-
 	public static void eliminarTurno() {
 		ArrayList<Turno> turnos = ConexionBDD.getTurnosPaciente(new Paciente(logeado));
 		
 		ArrayList<Turno> aux = new ArrayList<>(turnos);
 		
 		for (Turno turno : aux) {
-			if(turno.getFechaInicio().isBefore(LocalDate.now().plusDays(2))) {
+			//System.out.println(turno.getFechaInicio().toString() + " vs " + LocalDate.now().plusDays(2));
+			if(turno.getFechaInicio().isBefore(LocalDate.now().plusDays(1))) {
 				/*System.out.println("Turno eliminado: " 
 					+ turno.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
 					+ ", " + Turno.horaInicioFromSlot(turno.getSlot())
@@ -447,12 +447,28 @@ public class Menu {
 					rta = -1;
 				}
 			}
-			
 		}
-		
-		
-		
-		
+	}
+	
+	public static int menuAdminLogeado() {
+		int rta = -1;
+
+		System.out.println(
+				UIStrings.menuAdmin(logeado.getNombre() + " " + logeado.getApellido()));
+		System.out.print("Opción: ");
+		try {
+			rta = input.nextInt();
+			System.out.println("opcion elegida: " + rta);
+			if(rta >= 0 && rta <= 3) {
+				return rta;
+			}else {
+				System.out.println("Opción no válida.");
+				return -1;
+			}
+		} catch (Exception e) {
+			System.out.println("Opción no válida.");
+			return -1;
+		}
 	}
 	
 	public static void startApp() {
@@ -514,8 +530,27 @@ public class Menu {
 					break;
 				}
 			}else {
-				System.out.println(UIStrings.menuAdmin("admin"));
-				return;
+				do {
+					seleccion  = menuAdminLogeado();
+				} while (seleccion == -1);
+				
+				switch (seleccion) {
+				case 1:
+					System.out.println("Cargar paciente en emergencia: función no implementada");
+					break;
+					
+				case 2:
+					System.out.println("Ver ficha de paciente: función no implementada");
+					break;
+					
+				case 3:
+					System.out.println("Ver informe de pacientes atendidos función no implementada");
+					break;
+					
+				case 0:
+					logeado = null;
+					break;
+				}
 			}
 		}
 		

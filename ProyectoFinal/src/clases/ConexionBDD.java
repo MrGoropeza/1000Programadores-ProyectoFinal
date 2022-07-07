@@ -212,12 +212,14 @@ public class ConexionBDD {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Paciente paciente = getPacienteFromID(rs.getInt("paciente_id"));
-				resultados.add(new Turno(
+				Turno turno = new Turno(
 						fecha,
 						rs.getInt("slot"),
 						paciente,
 						doctor,
-						rs.getInt("turno_id")));
+						rs.getInt("turno_id"));
+				turno.setEmergencia(rs.getBoolean("isEmergencia"));
+				resultados.add(turno);
 			}
 		} catch (SQLException e) {
 			System.out.println("Hubo un error al obtener doctores de la base de datos:");
@@ -239,12 +241,14 @@ public class ConexionBDD {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Doctor doctor = getDoctorFromID(rs.getInt("doctor_id"));
-				resultados.add(new Turno(
+				Turno turno = new Turno(
 						rs.getDate("turno_fecha").toLocalDate(),
 						rs.getInt("slot"),
 						paciente,
 						doctor,
-						rs.getInt("turno_id")));
+						rs.getInt("turno_id"));
+				turno.setEmergencia(rs.getBoolean("isEmergencia"));
+				resultados.add(turno);
 			}
 		} catch (SQLException e) {
 			System.out.println("Hubo un error al obtener doctores de la base de datos:");
@@ -310,14 +314,15 @@ public class ConexionBDD {
 			//insercion de persona en la bdd
 			PreparedStatement stmt = conn.prepareStatement(
 					"insert into muelas.turnos "
-					+ "(turno_fecha, slot, paciente_id, doctor_id) "
+					+ "(turno_fecha, slot, paciente_id, doctor_id, isEmergencia) "
 					+ "value "
-					+ "(?,?,?,?)"
+					+ "(?,?,?,?,?)"
 					);
 			stmt.setDate(1, Date.valueOf(turno.getFechaInicio()));
 			stmt.setInt(2, turno.getSlot());
 			stmt.setInt(3, getPacienteID(turno.getPaciente().getDni()));
 			stmt.setInt(4, getDoctorID(turno.getDoctor().getDni()));
+			stmt.setBoolean(5, turno.isEmergencia());
 			int filasCargadas = stmt.executeUpdate();
 			if(filasCargadas != 1) {
 				return false;
