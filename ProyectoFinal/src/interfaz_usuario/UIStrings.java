@@ -1,6 +1,5 @@
 package interfaz_usuario;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +42,8 @@ public class UIStrings {
 		builder.element(new Text("Seleccione una opción: ", 4, 2, 50, 1));
 		builder.element(new Text("1) Como Administrador",6,3,50,1));
 		builder.element(new Text("2) Como Paciente",6,4,50,1));
-		builder.element(new Text("0) Volver",6,5,50,1));
+		builder.element(new Text("3) Como Doctor",6,5,50,1));
+		builder.element(new Text("0) Volver",6,6,50,1));
 		ICanvas canvas = render.render(builder.build());
 		String s = canvas.getText();
 		return s;
@@ -69,7 +69,8 @@ public class UIStrings {
 		IRender render = new Render();
 		IContextBuilder builder = render.newBuilder();
 		int height = 3 + tratamientos.size()*5;
-		builder.width(85).height(height);
+		builder.width(76).height(height);
+		builder.element(new Rectangle());
 		
 		Collections.sort(tratamientos, Comparator.comparing(Tratamiento::getFecha));
 		
@@ -81,9 +82,15 @@ public class UIStrings {
 		int fila = 2;
 		
 		for (Tratamiento tratamiento : tratamientos) {
-			tabla.setElement(1, fila, new Label(tratamiento.getFecha().toString()));
-			tabla.setElement(2, fila, new Label(tratamiento.getDoctor().getApellido()));
-			tabla.setElement(3, fila, new Text(tratamiento.getDescripcion(), 0, 0, 26, 3));
+			tabla.setElement(1, fila,
+					new Label(tratamiento.getFecha().toString()));
+			tabla.setElement(2, fila,
+					new Text(tratamiento.getDoctor().getApellido()
+							+ ", " 
+							+ tratamiento.getDoctor().getNombre()
+							, 0, 0, 26, 3));
+			tabla.setElement(3, fila,
+					new Text(tratamiento.getDescripcion(), 0, 0, 26, 3));
 			fila++;
 		}
 		
@@ -215,7 +222,7 @@ public class UIStrings {
 		IContextBuilder builder = render.newBuilder();
 		builder.width(80).height(9);
 		builder.element(new Rectangle());
-		builder.element(new Text("¿Estás de eliminar este turno?", 4, 0, 50, 1));
+		builder.element(new Text("¿Estás seguro de eliminar este turno?", 4, 0, 50, 1));
 		
 		builder.element(new Text("Fecha: " + turno.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
 				, 4, 2, 50, 1));
@@ -251,47 +258,109 @@ public class UIStrings {
 		return s;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(inicio());
-		System.out.println(menuPaciente("Gonzalo Oropeza"));
-		
-		Paciente yo = new Paciente(43337890,
-				"Gonzalo", 
-				"Oropeza",
-				LocalDate.of(2001, 3, 8), 
-				"3874047262",
-				"goropeza8@gmail.com");
-		
-		Doctor doctor = new Doctor(22333444,
-				"Juan",
-				"Perez",
-				LocalDate.of(1990, 5, 6),
-				"3874047262",
-				"doctor@correo.com", 
-				"Odontólogo",
-				"Mayores");
-		
-		Tratamiento t1 = new Tratamiento("Muela de Juicio,t1, una descripcion re contra larga",
-				LocalDate.of(2022, 6, 30), doctor, yo, false);
-		Tratamiento t2 = new Tratamiento("Muela de Juicio,t2",
-				LocalDate.of(2022, 6, 30), doctor, yo, false);
-		Tratamiento t3 = new Tratamiento("Muela de Juicio,t3",
-				LocalDate.of(2022, 6, 30), doctor, yo, false);
-		//Tratamiento t4 = new Tratamiento("Muela de Juicio,t4",
-		//		LocalDate.of(2022, 6, 30), doctor, yo, false);
-		
-		ArrayList<Tratamiento> tratamientos = new ArrayList<Tratamiento>();
-		tratamientos.add(t3);
-		tratamientos.add(t2);
-		tratamientos.add(t1);
-		//tratamientos.add(t4);
-		
-		//System.out.println(tablaTratamientos(tratamientos));
-		
-		System.out.println(menuAdmin("Guillermo Mogro"));
-		
+	public static String menuDoctor(String nombreDoctor) {
+		IRender render = new Render();
+		IContextBuilder builder = render.newBuilder();
+		builder.width(80).height(9);
+		builder.element(new Rectangle());
+		builder.element(new Text("Bienvenido, " + nombreDoctor, 4, 0, 50, 1));
+		builder.element(new Text("Seleccione una opción: ", 4, 2, 50, 1));
+		builder.element(new Text("1) Cargar tratamiento de un paciente",6,3,50,1));
+		builder.element(new Text("2) Ver ficha de un paciente",6,4,50,1));
+		builder.element(new Text("3) Ver agenda de hoy",6,5,50,1));
+		builder.element(new Text("0) Salir",6,6,50,1));
+		ICanvas canvas = render.render(builder.build());
+		String s = canvas.getText();
+		return s;
 	}
 	
+	public static String pacientesDisponibles(ArrayList<Paciente> pacientes) {
+		IRender render = new Render();
+		IContextBuilder builder = render.newBuilder();
+		int height = 5 + pacientes.size();
+		builder.width(80).height(height);
+		builder.element(new Rectangle());
+		builder.element(new Text("Tus Pacientes", 4, 0, 50, 1));
+		builder.element(new Text("Seleccione una opción: ", 4, 2, 50, 1));
+		
+		int opcion = 1;
+		for (Paciente paciente : pacientes) {
+			builder.element(new Text(opcion + ") "
+					+ paciente.getApellido() + ", "
+					+ paciente.getNombre() + ", DNI: "
+					+ paciente.getDni()
+					,6,opcion+2,50,1));
+			opcion++;
+		}
+		
+		ICanvas canvas = render.render(builder.build());
+		String s = canvas.getText();
+		return s;
+	}
+	
+	public static String selectEmergencia() {
+		IRender render = new Render();
+		IContextBuilder builder = render.newBuilder();
+		int height = 5;
+		builder.width(80).height(height);
+		builder.element(new Rectangle());
+		builder.element(new Text("¿Fue una emergencia?", 4, 0, 50, 1));
+
+		builder.element(new Text("Seleccione una opción: ", 4, 2, 50, 1));
+		builder.element(new Text("1) Sí",6,3,50,1));
+		builder.element(new Text("2) No",25,3,50,1));
+		
+		ICanvas canvas = render.render(builder.build());
+		String s = canvas.getText();
+		return s;
+	}
+	
+	public static String confirmarTratamiento(Tratamiento tratamiento) {
+		IRender render = new Render();
+		IContextBuilder builder = render.newBuilder();
+		
+		String descripcion = "Descripción: " + tratamiento.getDescripcion();
+		int height = 10 + descripcion.length()/72;
+		
+		builder.width(80).height(height);
+		builder.element(new Rectangle());
+		builder.element(new Text("¿Estás seguro de tu elección?", 4, 0, 50, 1));
+		
+		builder.element(new Text("Fecha: " + tratamiento.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+				, 4, 2, 50, 1));
+		builder.element(new Text("Paciente: " + tratamiento.getPaciente().getApellido() 
+				+ ", " + tratamiento.getPaciente().getNombre(),
+				4, 3, 50, 1));
+		
+		if(tratamiento.getEsEmergencia()) {
+			builder.element(new Text("¿Fue emergencia?: Sí"
+			, 4, 4, 50, 1));
+		}else {
+			builder.element(new Text("¿Fue emergencia?: No"
+			, 4, 4, 50, 1));
+		}
+		
+		if(descripcion.length() < 72) {
+			builder.element(new Text("Descripción: " + tratamiento.getDescripcion(),
+					4, 5, 50, 1));
+			builder.element(new Text("Seleccione una opción: ", 4, 7, 50, 1));
+			builder.element(new Text("1) Sí",6,8,50,1));
+			builder.element(new Text("2) No",25,8,50,1));
+			builder.element(new Text("0) Cancelar",44,8,50,1));
+		}else {
+			int filasDesc = descripcion.length()/72;
+			builder.element(new Text("Descripción: " + tratamiento.getDescripcion(),
+					4, 4, 50, filasDesc));
+			builder.element(new Text("Seleccione una opción: ", 4, 7 + filasDesc, 50, 1));
+			builder.element(new Text("1) Sí",6,8 + filasDesc,50,1));
+			builder.element(new Text("2) No",25,8 + filasDesc,50,1));
+			builder.element(new Text("0) Cancelar",44,8 + filasDesc,50,1));
+		}
+		
+		ICanvas canvas = render.render(builder.build());
+		String s = canvas.getText();
+		return s;
+	}
 	
 
 }

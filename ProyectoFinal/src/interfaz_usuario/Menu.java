@@ -13,6 +13,7 @@ import clases.Consultorio;
 import clases.Doctor;
 import clases.Paciente;
 import clases.Persona;
+import clases.Tratamiento;
 import clases.Turno;
 
 public class Menu {
@@ -25,6 +26,11 @@ public class Menu {
 	
 	private static boolean isAdmin;
 	
+	private static boolean isDoctor;
+	
+	
+	
+	// inicio funciones iniciales
 	public static int bienvenidaInicial() {
 		int rta = -1;
 
@@ -50,6 +56,7 @@ public class Menu {
 			}
 		} catch (Exception e) {
 			System.out.println("Opción no válida.");
+			input.nextLine();
 			return -1;
 		}
 	}
@@ -62,12 +69,13 @@ public class Menu {
 			System.out.print("Opción: ");
 			try {
 				rta = input.nextInt();
-				if(rta != 1 && rta != 2 && rta != 0) {
+				if(rta != 1 && rta != 2 && rta != 3 && rta != 0) {
 					System.out.println("Opción no válida.");
 					rta = -1;
 				}
 			} catch (Exception e) {
 				System.out.println("Opción no válida.");
+				input.nextLine();
 				rta = -1;
 			}
 		}
@@ -91,9 +99,15 @@ public class Menu {
 				if(rta == 1) {
 					usuario = ConexionBDD.getAdministrativoFromDNI(dni);
 					isAdmin = true;
+					isDoctor = false;
 				}else if (rta == 2) {
 					usuario = ConexionBDD.getPacienteFromDNI(dni);
 					isAdmin = false;
+					isDoctor = false;
+				}else if (rta == 3) {
+					usuario = ConexionBDD.getDoctorFromDNI(dni);
+					isAdmin = false;
+					isDoctor = true;
 				}else {
 					usuario = null;
 					isAdmin = false;
@@ -117,9 +131,13 @@ public class Menu {
 		
 	}
 	public static void registrarse() {
-		// TODO: registro
+		// TODO
 	}
+	// fin funciones iniciales
 	
+	
+	
+	// inicio funciones paciente
 	public static int menuPacienteLogeado() {
 		int rta = -1;
 
@@ -146,11 +164,11 @@ public class Menu {
 			}
 		} catch (Exception e) {
 			System.out.println("Opción no válida.");
+			input.nextLine();
 			return -1;
 		}
 	}
 	
-	// funciones paciente
 	public static boolean reservarTurno() {
 		boolean rta = false;
 		
@@ -256,7 +274,6 @@ public class Menu {
 			if(indexElegido == -1) {
 				System.out.println("Opción no válida.");
 			}else {
-				System.out.println("Slot elegido: " + slotsLibres.get(indexElegido));
 				turnoElegido = new Turno(
 						fecha,
 						slotsLibres.get(indexElegido),
@@ -450,6 +467,22 @@ public class Menu {
 		}
 	}
 	
+	public static void verFichaPaciente(Paciente paciente) {
+		
+		ArrayList<Tratamiento> tratamientos = ConexionBDD.getTratamientosPaciente(paciente);
+		if(tratamientos.size() > 0) {
+			System.out.println("Tus tramientos en Dr. Muelas:");
+			System.out.println(UIStrings.tablaTratamientos(tratamientos));
+		}else {
+			System.out.println("No tenés tratamientos cargados.");
+		}
+		
+		
+	}
+	// fin funciones paciente
+	
+	
+	// inicio funciones admin
 	public static int menuAdminLogeado() {
 		int rta = -1;
 
@@ -458,7 +491,6 @@ public class Menu {
 		System.out.print("Opción: ");
 		try {
 			rta = input.nextInt();
-			System.out.println("opcion elegida: " + rta);
 			if(rta >= 0 && rta <= 3) {
 				return rta;
 			}else {
@@ -467,9 +499,223 @@ public class Menu {
 			}
 		} catch (Exception e) {
 			System.out.println("Opción no válida.");
+			input.nextLine();
 			return -1;
 		}
 	}
+	
+	public static void verFichaPaciente() {
+		
+		// inicio seleccion de paciente
+		ArrayList<Paciente> pacientesDisponibles = ConexionBDD.getPacientes();
+		
+		Paciente pacienteElegido = null;
+		if(pacientesDisponibles.size() > 0) {
+			while(pacienteElegido == null) {
+				int indexElegido = selectPaciente(pacientesDisponibles);
+				if(indexElegido == -1) {
+					System.out.println("Opción no válida.");
+				}else {
+					pacienteElegido = pacientesDisponibles.get(indexElegido);
+				}
+			}
+		}else {
+			System.out.println("No hay pacientes registrados en el consultorio.");
+			return;
+		}
+		// fin seleccion de paciente
+		
+		ArrayList<Tratamiento> tratamientos = ConexionBDD.getTratamientosPaciente(pacienteElegido);
+		if(tratamientos.size() > 0) {
+			System.out.println("Tratamientos de "
+					+ pacienteElegido.getApellido() + ", "
+					+ pacienteElegido.getNombre()
+					+ " (DNI: " + pacienteElegido.getDni() + "):");
+			System.out.println(UIStrings.tablaTratamientos(tratamientos));
+		}else {
+			System.out.println(pacienteElegido.getApellido() + ", "
+					+ pacienteElegido.getNombre()
+					+ " (DNI: " + pacienteElegido.getDni()
+					+ ") no tiene tratamientos registrados.");
+		}
+		
+		
+	}
+	// fin funciones admin
+	
+	// inicio funciones doctor
+	public static int menuDoctorLogeado() {
+		int rta = -1;
+
+		System.out.println(
+				UIStrings.menuDoctor(logeado.getNombre() + " " + logeado.getApellido()));
+		System.out.print("Opción: ");
+		try {
+			rta = input.nextInt();
+			if(rta >= 0 && rta <= 3) {
+				return rta;
+			}else {
+				System.out.println("Opción no válida.");
+				return -1;
+			}
+		} catch (Exception e) {
+			System.out.println("Opción no válida.");
+			input.nextLine();
+			return -1;
+		}
+	}
+	
+	public static void cargarTratamiento() {
+		
+		int rta = -1;
+		
+		while(rta == -1) {
+		
+		// Seleccion de Paciente
+		Doctor actual = (Doctor) logeado;
+		
+		ArrayList<Paciente> pacientesDisponibles = ConexionBDD.getPacientesDoctor(actual);
+		
+		
+		Paciente pacienteElegido = null;
+		if(pacientesDisponibles.size() > 0) {
+			while(pacienteElegido == null) {
+				int indexElegido = selectPaciente(pacientesDisponibles);
+				if(indexElegido == -1) {
+					System.out.println("Opción no válida.");
+				}else {
+					pacienteElegido = pacientesDisponibles.get(indexElegido);
+				}
+			}
+		}else {
+			System.out.println("No hay pacientes que hayan sido atendidos por vos.");
+			return;
+		}
+		
+		// Fin Seleccion de Paciente
+		
+		// Inicio Seleccion Fecha
+		
+		LocalDate fecha = null;
+		input.nextLine();
+		while (fecha == null) {
+			System.out.print("Ingrese fecha para el turno (dd/MM/yyyy): ");
+			fecha = ingresoFecha();
+		}
+		
+		// Fin Seleccion Fecha
+		
+		// Inicio Ingreso Descripcion
+		
+		String descripcion = null;
+		while (descripcion == null) {
+			System.out.print("Breve descripción del tratamiento: ");
+			descripcion = input.nextLine();
+			if(descripcion.equals("")) {
+				descripcion = null;
+			}
+		}		
+		
+		// Fin Ingreso Descripcion
+		
+		// Inicio Seleccion Emergencia
+		Boolean isEmergencia = null;
+		if (!actual.getSector().equals("emergencias")) {
+			isEmergencia = false;
+		}else {
+			isEmergencia = true;
+		}
+		
+		// Fin Seleccion Emergencia
+		
+		// Inicio Confirmar tratamiento
+		
+		Tratamiento elegido = new Tratamiento(
+				descripcion, 
+				fecha,
+				actual, 
+				pacienteElegido, 
+				isEmergencia);
+		
+		int eleccionFinal = -1;
+		
+		while(eleccionFinal == -1) {
+			System.out.println(UIStrings.confirmarTratamiento(elegido));
+			System.out.print("Opción: ");
+			try {
+				eleccionFinal = input.nextInt();
+				switch (eleccionFinal) {
+				case 1:
+					ConexionBDD.addTratamiento(elegido);
+					return;
+					
+				case 2:
+					rta = -1;
+					break;
+				
+				case 0:
+					return;
+					
+				default:
+					System.out.println("Opción no válida.");
+					eleccionFinal = -1;
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Opción no válida.");
+				input.nextLine();
+				eleccionFinal = -1;
+			}
+		}
+		
+		// Fin Confirmar tratamiento
+		
+		}
+	}
+	
+	public static int selectPaciente(ArrayList<Paciente> pacientes) {
+		int rta = -1;
+		System.out.println(UIStrings.pacientesDisponibles(pacientes));
+		System.out.print("Opción: ");
+		try {
+			rta = input.nextInt();
+			pacientes.get(rta-1);
+			rta -= 1;
+		} catch (Exception e) {
+			System.out.println("Opción no válida.");
+			input.nextLine();
+			return -1;
+		}
+		return rta;
+	}
+	public static int confirmTratamiento(Tratamiento tratamiento) {
+		int rta = -1;
+		System.out.println(UIStrings.confirmarTratamiento(tratamiento));
+		System.out.print("Opción: ");
+		try {
+			rta = input.nextInt();
+			switch (rta) {
+			case 1:
+				return rta;
+				
+			case 2:
+				return rta;
+			
+			case 0:
+				return rta;
+				
+			default:
+				System.out.println("Opción no válida.");
+				return -1;
+			}
+		} catch (Exception e) {
+			System.out.println("Opción no válida.");
+			input.nextLine();
+			return -1;
+		}
+	}
+	// fin funciones doctor
+	
 	
 	public static void startApp() {
 		
@@ -498,6 +744,7 @@ public class Menu {
 					break;
 					
 				case 0:
+					input.close();
 					return;
 				}
 			}
@@ -506,7 +753,7 @@ public class Menu {
 			
 			int seleccion = -1;
 			// menu paciente
-			if(!isAdmin) {
+			if(!isAdmin && !isDoctor) {
 				
 				do {
 					seleccion  = menuPacienteLogeado();
@@ -522,14 +769,14 @@ public class Menu {
 					break;
 					
 				case 3:
-					System.out.println("Ver mis tratamientos: función no implementada");
+					verFichaPaciente((Paciente)logeado);
 					break;
 					
 				case 0:
 					logeado = null;
 					break;
 				}
-			}else {
+			}else if (isAdmin){
 				do {
 					seleccion  = menuAdminLogeado();
 				} while (seleccion == -1);
@@ -540,11 +787,33 @@ public class Menu {
 					break;
 					
 				case 2:
-					System.out.println("Ver ficha de paciente: función no implementada");
+					verFichaPaciente();
 					break;
 					
 				case 3:
-					System.out.println("Ver informe de pacientes atendidos función no implementada");
+					System.out.println("Ver informe de pacientes: atendidos función no implementada");
+					break;
+					
+				case 0:
+					logeado = null;
+					break;
+				}
+			}else if (isDoctor) {
+				do {
+					seleccion  = menuDoctorLogeado();
+				} while (seleccion == -1);
+				
+				switch (seleccion) {
+				case 1:
+					cargarTratamiento();
+					break;
+					
+				case 2:
+					verFichaPaciente();
+					break;
+					
+				case 3:
+					System.out.println("Ver agenda de hoy: función no implementada");
 					break;
 					
 				case 0:

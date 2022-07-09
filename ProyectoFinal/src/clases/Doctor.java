@@ -1,7 +1,6 @@
 package clases;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Doctor extends Persona {
 	

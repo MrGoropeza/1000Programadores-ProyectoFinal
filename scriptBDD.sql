@@ -103,8 +103,16 @@ create table turnos(
     insert into muelas.administrativos
 		(persona_dni,is_super_admin)
 	value (40297421,true);
-
-
-select * from muelas.turnos;
-
-drop database muelas;
+	
+    # Paciente
+    insert into muelas.personas
+		(persona_dni,persona_nombre,persona_apellido,persona_fecha_nac,persona_numero,persona_correo)
+    values
+		(43337890,'Gonzalo','Oropeza','2001-03-08','3874047262','goropeza8@gmail.com'),
+        (43337891,'Gonzalo','Fernandez','2001-03-08','3874047262','goropeza8@gmail.com');
+        
+	insert into muelas.pacientes
+		(persona_dni)
+		values 
+			(43337890),
+			(43337891);
